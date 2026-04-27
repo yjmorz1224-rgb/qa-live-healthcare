@@ -14,6 +14,10 @@
           <MessageOutlined />
           问诊
         </a-menu-item>
+        <a-menu-item key="appointment" @click="navigateTo('/appointment')">
+          <CalendarOutlined />
+          挂号
+        </a-menu-item>
         <a-menu-item key="doctors" @click="navigateTo('/doctors')">
           <TeamOutlined />
           医生
@@ -34,7 +38,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { HomeOutlined, MessageOutlined, TeamOutlined, InfoCircleOutlined, UserOutlined } from '@ant-design/icons-vue';
+import { HomeOutlined, MessageOutlined, TeamOutlined, InfoCircleOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons-vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -49,6 +53,8 @@ watch(() => route.path, (newPath) => {
     selectedKeys.value = ['doctors'];
   } else if (newPath.startsWith('/about')) {
     selectedKeys.value = ['about'];
+  } else if (newPath.startsWith('/appointment')) {
+    selectedKeys.value = ['appointment'];
   }
 }, { immediate: true });
 

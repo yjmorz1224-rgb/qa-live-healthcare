@@ -3,27 +3,27 @@
 **Feature ID**: FEAT-001
 **Feature Name**: appointment-booking
 **Created Date**: 2026-04-27
-**Last Updated**: 2026-04-27
+**Last Updated**: 2026-04-27 (TASK-008 完成 — FEAT-001 全部完成)
 **Language**: zh-CN
 
 ## Summary
 
 | Total Tasks | TODO | In Progress | Done | Blocked | Cancelled |
 |-------------|------|-------------|------|---------|-----------|
-| 8           | 8    | 0           | 0    | 0       | 0         |
+| 8           | 0    | 0           | 8    | 0       | 0         |
 
 ## Task Registry
 
 | Task ID | Task Name | Status | Task PRD | Dependencies | Estimated Effort | Created | Updated |
 |---------|-----------|--------|----------|--------------|------------------|---------|---------|
-| TASK-001 | data-model-and-init-file | TODO | [TASK-001-data-model-and-init-file-prd.md](./TASK-001-data-model-and-init-file-prd.md) | NONE | 0.5 hours | 2026-04-27 | 2026-04-27 |
-| TASK-002 | store-appointment-state | TODO | [TASK-002-store-appointment-state-prd.md](./TASK-002-store-appointment-state-prd.md) | TASK-001 | 1.5 hours | 2026-04-27 | 2026-04-27 |
-| TASK-003 | router-config-appointment | TODO | [TASK-003-router-config-appointment-prd.md](./TASK-003-router-config-appointment-prd.md) | NONE | 0.25 hours | 2026-04-27 | 2026-04-27 |
-| TASK-004 | appointment-page-development | TODO | [TASK-004-appointment-page-development-prd.md](./TASK-004-appointment-page-development-prd.md) | TASK-001, TASK-002 | 2 hours | 2026-04-27 | 2026-04-27 |
-| TASK-005 | navigation-entry-extension | TODO | [TASK-005-navigation-entry-extension-prd.md](./TASK-005-navigation-entry-extension-prd.md) | TASK-003 | 0.75 hours | 2026-04-27 | 2026-04-27 |
-| TASK-006 | patient-appointment-tab | TODO | [TASK-006-patient-appointment-tab-prd.md](./TASK-006-patient-appointment-tab-prd.md) | TASK-002 | 1 hour | 2026-04-27 | 2026-04-27 |
-| TASK-007 | doctor-appointment-management | TODO | [TASK-007-doctor-appointment-management-prd.md](./TASK-007-doctor-appointment-management-prd.md) | TASK-002 | 1 hour | 2026-04-27 | 2026-04-27 |
-| TASK-008 | integration-testing | TODO | [TASK-008-integration-testing-prd.md](./TASK-008-integration-testing-prd.md) | TASK-004, TASK-005, TASK-006, TASK-007 | 1 hour | 2026-04-27 | 2026-04-27 |
+| TASK-001 | data-model-and-init-file | **DONE** | [TASK-001-data-model-and-init-file-prd.md](./TASK-001-data-model-and-init-file-prd.md) | NONE | 0.5 hours | 2026-04-27 | 2026-04-27 |
+| TASK-002 | store-appointment-state | **DONE** | [TASK-002-store-appointment-state-prd.md](./TASK-002-store-appointment-state-prd.md) | TASK-001 | 1.5 hours | 2026-04-27 | 2026-04-27 |
+| TASK-003 | router-config-appointment | **DONE** | [TASK-003-router-config-appointment-prd.md](./TASK-003-router-config-appointment-prd.md) | NONE | 0.25 hours | 2026-04-27 | 2026-04-27 |
+| TASK-004 | appointment-page-development | **DONE** | [TASK-004-appointment-page-development-prd.md](./TASK-004-appointment-page-development-prd.md) | TASK-001, TASK-002 | 2 hours | 2026-04-27 | 2026-04-27 |
+| TASK-005 | navigation-entry-extension | **DONE** | [TASK-005-navigation-entry-extension-prd.md](./TASK-005-navigation-entry-extension-prd.md) | TASK-003 | 0.75 hours | 2026-04-27 | 2026-04-27 |
+| TASK-006 | patient-appointment-tab | **DONE** | [TASK-006-patient-appointment-tab-prd.md](./TASK-006-patient-appointment-tab-prd.md) | TASK-002 | 1 hour | 2026-04-27 | 2026-04-27 |
+| TASK-007 | doctor-appointment-management | **DONE** | [TASK-007-doctor-appointment-management-prd.md](./TASK-007-doctor-appointment-management-prd.md) | TASK-002 | 1 hour | 2026-04-27 | 2026-04-27 |
+| TASK-008 | integration-testing | **DONE** | [TASK-008-integration-testing-prd.md](./TASK-008-integration-testing-prd.md) | TASK-004, TASK-005, TASK-006, TASK-007 | 1 hour | 2026-04-27 | 2026-04-27 |
 
 ## Dependency Graph
 

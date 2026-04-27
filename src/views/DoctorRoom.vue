@@ -87,6 +87,58 @@
         </a-collapse>
         <a-empty v-else description="暂无已解答问题" />
       </div>
+
+      <!-- TASK-007: 预约管理区域 -->
+      <div class="appointment-section">
+        <!-- 子区域 A: 待处理预约 -->
+        <div class="appt-subsection">
+          <h2>待处理预约 ({{ pendingAppointments.length }})</h2>
+          <a-empty v-if="pendingAppointments.length === 0" description="暂无待处理预约" />
+          <div v-else class="appt-list">
+            <div
+              v-for="appt in pendingAppointments"
+              :key="appt.id"
+              class="appt-card"
+            >
+              <div class="appt-header">
+                <span class="appt-patient-name">{{ appt.patientName }}</span>
+                <span class="appt-time"><CalendarOutlined /> {{ appt.appointmentDate }} {{ appt.timeSlotLabel }}</span>
+              </div>
+              <p class="appt-symptoms">{{ appt.symptoms }}</p>
+              <div class="appt-actions">
+                <a-button type="primary" size="small" @click="handleConfirm(appt)">
+                  确认预约
+                </a-button>
+                <a-button danger size="small" @click="handleReject(appt)">
+                  拒绝
+                </a-button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 子区域 B: 已确认预约 (Table) -->
+        <div class="appt-subsection">
+          <h2>已确认预约 ({{ confirmedAppointments.length }})</h2>
+          <a-empty v-if="confirmedAppointments.length === 0" description="暂无已确认预约" />
+          <a-table
+            v-else
+            :columns="apptColumns"
+            :data-source="confirmedAppointments"
+            :row-key="(record: Appointment) => record.id"
+            size="small"
+            :pagination="{ pageSize: 5 }"
+          >
+            <template #bodyCell="{ column, record }">
+              <template v-if="column.key === 'action'">
+                <a-button type="link" size="small" @click="handleComplete(record)">
+                  完成
+                </a-button>
+              </template>
+            </template>
+          </a-table>
+        </div>
+      </div>
     </div>
 
     <a-modal
@@ -114,9 +166,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, h } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import {
   CopyOutlined,
@@ -124,9 +176,10 @@ import {
   ReloadOutlined,
   UserOutlined,
   EditOutlined,
-  CheckOutlined
+  CheckOutlined,
+  CalendarOutlined
 } from '@ant-design/icons-vue';
-import { store, Question } from '../store';
+import { store, Question, Appointment } from '../store';
 
 const route = useRoute();
 const router = useRouter();
@@ -212,6 +265,81 @@ const markAsAnswered = (questionId: string) => {
   store.markQuestionAsAnswered(questionId);
   message.success('已标记为已解答');
 };
+
+// ==================== TASK-007: 预约管理区域 ====================
+
+const pendingAppointments = computed(() =>
+  currentDoctor.value ? store.getPendingAppointments(currentDoctor.value.id) : []
+);
+
+/** confirmed 状态预约 — 用于 Table 展示 */
+const confirmedAppointments = computed(() =>
+  currentDoctor.value
+    ? store.getAppointmentsByDoctor(currentDoctor.value.id).filter(a => a.status === 'confirmed')
+    : []
+);
+
+/** 已确认预约 Table 列定义 */
+const apptColumns = [
+  { title: '日期', dataIndex: 'appointmentDate', key: 'appointmentDate', width: 110 },
+  { title: '时段', dataIndex: 'timeSlotLabel', key: 'timeSlotLabel', width: 130 },
+  { title: '患者', dataIndex: 'patientName', key: 'patientName', width: 100 },
+  { title: '症状', dataIndex: 'symptoms', key: 'symptoms', ellipsis: true },
+  { title: '操作', key: 'action', width: 80 },
+];
+
+/** 确认预约 */
+const handleConfirm = (appt: Appointment) => {
+  try {
+    store.confirmAppointment(appt.id);
+    message.success('预约已确认');
+  } catch (_err: any) {
+    message.error('操作失败，请稍后重试');
+  }
+};
+
+/** 拒绝预约 — 含可选原因输入 */
+const handleReject = (appt: Appointment) => {
+  let reason = '';
+  Modal.confirm({
+    title: '拒绝预约',
+    content: () => h('div', [
+      h('p', '确定要拒绝以下预约吗？'),
+      h('p', [h('strong', '患者: '), appt.patientName]),
+      h('p', [h('strong', '时间: '), appt.appointmentDate, ' ', appt.timeSlotLabel]),
+      h('div', { style: 'margin-top:12px' }, [
+        h('a-textarea', {
+          value: reason,
+          placeholder: '拒绝原因（选填）',
+          maxlength: 200,
+          rows: 3,
+          'onUpdate:value': (val: string) => { reason = val; },
+        }),
+      ]),
+    ]),
+    okText: '确认拒绝',
+    okType: 'danger',
+    cancelText: '取消',
+    onOk() {
+      try {
+        store.rejectAppointment(appt.id, reason || undefined);
+        message.success('已拒绝该预约');
+      } catch (_err: any) {
+        message.error('操作失败，请稍后重试');
+      }
+    },
+  });
+};
+
+/** 完成预约 */
+const handleComplete = (appt: Appointment) => {
+  try {
+    store.completeAppointment(appt.id);
+    message.success('预约已完成');
+  } catch (_err: any) {
+    message.error('操作失败，请稍后重试');
+  }
+};
 </script>
 
 <style scoped>
@@ -274,7 +402,8 @@ const markAsAnswered = (questionId: string) => {
 }
 
 .questions-section,
-.answered-section {
+.answered-section,
+.appointment-section {
   background: #fff;
   border-radius: 12px;
   padding: 24px;
@@ -290,7 +419,8 @@ const markAsAnswered = (questionId: string) => {
 }
 
 .section-header h2,
-.answered-section h2 {
+.answered-section h2,
+.appointment-section h2 {
   font-size: 20px;
   font-weight: 600;
   color: #333;
@@ -396,5 +526,63 @@ const markAsAnswered = (questionId: string) => {
   .question-actions {
     flex-direction: column;
   }
+}
+
+/* ==================== TASK-007: 预约管理样式 ==================== */
+
+.appt-subsection + .appt-subsection {
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.appt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.appt-card {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fafafa;
+}
+
+.appt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.appt-patient-name {
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+}
+
+.appt-time {
+  font-size: 13px;
+  color: #1890ff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.appt-symptoms {
+  margin: 0 0 12px;
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.appt-actions {
+  display: flex;
+  gap: 12px;
 }
 </style>

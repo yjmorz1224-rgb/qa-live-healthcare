@@ -77,41 +77,88 @@
         </div>
 
         <div class="questions-section">
-          <div class="section-header">
-            <h2>我的问题</h2>
-            <a-button type="primary" @click="showSubmitModal">
-              <PlusOutlined />
-              提交问题
-            </a-button>
-          </div>
-
-          <a-empty v-if="myQuestions.length === 0" description="您还没有提交过问题" />
-
-          <div v-else class="my-questions-list">
-            <a-card
-              v-for="question in myQuestions"
-              :key="question.id"
-              class="question-item"
-            >
-              <template #title>
-                <div class="question-title">
-                  <span>{{ question.doctorName }}</span>
-                  <a-tag :color="question.status === 'answered' ? 'green' : 'orange'">
-                    {{ question.status === 'answered' ? '已解答' : '待解答' }}
-                  </a-tag>
-                </div>
-              </template>
-              <div class="question-detail">
-                <p class="question-text"><strong>问题:</strong> {{ question.question }}</p>
-                <p class="submit-time">提交时间: {{ formatTime(question.submitTime) }}</p>
-                <div v-if="question.status === 'answered'" class="answer-section">
-                  <a-divider />
-                  <p class="answer-text"><strong>医生回复:</strong> {{ question.answer }}</p>
-                  <p class="answer-time">回复时间: {{ formatTime(question.answerTime!) }}</p>
-                </div>
+          <a-tabs v-model:activeKey="portalActiveTab">
+            <!-- Tab 1: 我的问题（原内容） -->
+            <a-tab-pane key="questions" tab="我的问题">
+              <div class="section-header">
+                <h2>我的问题</h2>
+                <a-button type="primary" @click="showSubmitModal">
+                  <PlusOutlined />
+                  提交问题
+                </a-button>
               </div>
-            </a-card>
-          </div>
+
+              <a-empty v-if="myQuestions.length === 0" description="您还没有提交过问题" />
+
+              <div v-else class="my-questions-list">
+                <a-card
+                  v-for="question in myQuestions"
+                  :key="question.id"
+                  class="question-item"
+                >
+                  <template #title>
+                    <div class="question-title">
+                      <span>{{ question.doctorName }}</span>
+                      <a-tag :color="question.status === 'answered' ? 'green' : 'orange'">
+                        {{ question.status === 'answered' ? '已解答' : '待解答' }}
+                      </a-tag>
+                    </div>
+                  </template>
+                  <div class="question-detail">
+                    <p class="question-text"><strong>问题:</strong> {{ question.question }}</p>
+                    <p class="submit-time">提交时间: {{ formatTime(question.submitTime) }}</p>
+                    <div v-if="question.status === 'answered'" class="answer-section">
+                      <a-divider />
+                      <p class="answer-text"><strong>医生回复:</strong> {{ question.answer }}</p>
+                      <p class="answer-time">回复时间: {{ formatTime(question.answerTime!) }}</p>
+                    </div>
+                  </div>
+                </a-card>
+              </div>
+            </a-tab-pane>
+
+            <!-- Tab 2: 我的预约 (TASK-006) -->
+            <a-tab-pane key="appointments" tab="我的预约">
+              <a-empty v-if="myAppointments.length === 0" description="暂无预约记录" />
+
+              <div v-else class="my-appointments-list">
+                <a-card
+                  v-for="appt in myAppointments"
+                  :key="appt.id"
+                  class="appointment-item"
+                >
+                  <template #title>
+                    <div class="appointment-title">
+                      <img v-if="getDoctorAvatar(appt.doctorId)" :src="getDoctorAvatar(appt.doctorId)" :alt="appt.doctorName" class="appt-doctor-avatar" />
+                      <span>{{ appt.doctorName }}</span>
+                      <a-tag color="blue">{{ appt.department }}</a-tag>
+                      <a-tag :color="statusConfig[appt.status]?.color || 'default'">
+                        {{ statusConfig[appt.status]?.label || appt.status }}
+                      </a-tag>
+                    </div>
+                  </template>
+                  <div class="appointment-body">
+                    <div class="appointment-time">
+                      <CalendarOutlined class="time-icon" />
+                      <span class="time-text">{{ appt.appointmentDate }} {{ appt.timeSlotLabel }}</span>
+                    </div>
+                    <p class="appointment-symptoms"><strong>症状描述:</strong> {{ appt.symptoms }}</p>
+                    <p class="appointment-created">创建时间: {{ formatTime(appt.createdAt) }}</p>
+
+                    <!-- 取消原因展示 -->
+                    <div v-if="appt.cancelReason" class="cancel-reason">
+                      <a-alert :message="'取消原因: ' + appt.cancelReason" type="warning" show-icon :closable="false" />
+                    </div>
+                  </div>
+                  <template #actions v-if="appt.status === 'pending' || appt.status === 'confirmed'">
+                    <a-button danger size="small" @click="handleCancelAppointment(appt)">
+                      取消预约
+                    </a-button>
+                  </template>
+                </a-card>
+              </div>
+            </a-tab-pane>
+          </a-tabs>
         </div>
       </div>
     </div>
@@ -163,16 +210,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { message } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import dayjs, { Dayjs } from 'dayjs';
 import {
   UserOutlined,
   LogoutOutlined,
-  PlusOutlined
+  PlusOutlined,
+  CalendarOutlined
 } from '@ant-design/icons-vue';
-import { store, Doctor } from '../store';
+import { store, Doctor, Appointment } from '../store';
 
 const route = useRoute();
 
@@ -300,6 +348,69 @@ const submitQuestion = () => {
 
 const formatTime = (time: string) => {
   return dayjs(time).format('YYYY-MM-DD HH:mm');
+};
+
+// ==================== TASK-006: 我的预约 Tab ====================
+
+const portalActiveTab = ref<string>('questions');
+
+/** 监听路由 query.tab 参数，自动切换到指定 Tab */
+watch(() => route.query.tab as string, (tab) => {
+  if (tab === 'appointments' || tab === 'questions') {
+    portalActiveTab.value = tab;
+  }
+}, { immediate: true });
+
+const myAppointments = computed(() =>
+  currentPatient.value
+    ? store.getAppointmentsByPatient(currentPatient.value.id)
+    : []
+);
+
+/** 状态 Tag 颜色映射 */
+const statusConfig: Record<string, { color: string; label: string }> = {
+  pending: { color: 'orange', label: '待确认' },
+  confirmed: { color: 'green', label: '已确认' },
+  completed: { color: 'blue', label: '已完成' },
+  cancelled: { color: 'default', label: '已取消' },
+};
+
+/** 根据 doctorId 获取医生头像 */
+const getDoctorAvatar = (doctorId: string): string => {
+  const doctor = store.state.doctors.find(d => d.id === doctorId);
+  return doctor?.avatar || '';
+};
+
+/** 取消预约 — 含 24h 前端预检 + Modal.confirm 二次确认 */
+const handleCancelAppointment = (appt: Appointment) => {
+  // 前端预检：距预约时间不足 24h 直接阻止
+  const hoursDiff = dayjs(appt.appointmentDate).diff(dayjs(), 'hour', true);
+  if (hoursDiff < 24) {
+    message.warning('距就诊时间不足 24 小时，无法取消预约');
+    return;
+  }
+
+  Modal.confirm({
+    title: '确认取消预约',
+    content: `确定要取消以下预约吗？\n医生：${appt.doctorName}\n日期：${appt.appointmentDate} ${appt.timeSlotLabel}\n\n取消后需重新预约。`,
+    okText: '确认取消',
+    okType: 'danger',
+    cancelText: '再想想',
+    onOk() {
+      try {
+        store.cancelAppointment(appt.id, appt.patientId);
+        message.success('预约已成功取消');
+        console.log('[CANCEL_APPOINTMENT]', {
+          action: 'CANCEL_APPOINTMENT',
+          appointmentId: appt.id,
+          patientId: appt.patientId,
+          timestamp: new Date().toISOString(),
+        });
+      } catch (err: any) {
+        message.error(err?.message || '操作失败，请重试');
+      }
+    },
+  });
 };
 </script>
 
@@ -459,6 +570,70 @@ const formatTime = (time: string) => {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+/* ==================== TASK-006: 预约列表样式 ==================== */
+
+.my-appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.appointment-item {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.appointment-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.appt-doctor-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e6f4ff;
+}
+
+.appointment-body {
+  line-height: 1.8;
+}
+
+.appointment-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1890ff;
+}
+
+.time-icon {
+  font-size: 18px;
+  color: #1890ff;
+}
+
+.time-text {
+  letter-spacing: 0.5px;
+}
+
+.appointment-symptoms {
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.appointment-created {
+  font-size: 12px;
+  color: #999;
+  margin: 0 0 12px;
+}
+
+.cancel-reason {
+  margin-top: 12px;
 }
 
 @media (max-width: 768px) {

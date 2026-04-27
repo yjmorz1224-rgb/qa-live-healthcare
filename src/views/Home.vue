@@ -25,6 +25,10 @@
           <a-button size="large" @click="navigateTo('/doctors')">
             查看医生
           </a-button>
+          <a-button size="large" ghost type="primary" @click="navigateTo('/appointment')">
+            <CalendarOutlined />
+            预约挂号
+          </a-button>
         </div>
       </div>
       <div class="hero-image">
@@ -67,6 +71,15 @@
         <div class="stat-info">
           <h3>{{ statistics.totalSessions }}</h3>
           <p>在线诊室</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon appointment">
+          <CalendarOutlined />
+        </div>
+        <div class="stat-info">
+          <h3>{{ statistics.totalAppointments }}</h3>
+          <p>预约总数</p>
         </div>
       </div>
     </section>
@@ -113,7 +126,8 @@ import {
   TeamOutlined,
   FileTextOutlined,
   ClockCircleOutlined,
-  UserOutlined
+  UserOutlined,
+  CalendarOutlined
 } from '@ant-design/icons-vue';
 
 const router = useRouter();
@@ -246,6 +260,10 @@ const navigateTo = (path: string) => {
 
 .stat-icon.session {
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.stat-icon.appointment {
+  background: linear-gradient(135deg, #faad14 0%, #ff7a45 100%);
 }
 
 .stat-info h3 {

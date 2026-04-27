@@ -5,6 +5,7 @@ import DoctorLogin from '../views/DoctorLogin.vue';
 import DoctorRoom from '../views/DoctorRoom.vue';
 import Doctors from '../views/Doctors.vue';
 import About from '../views/About.vue';
+import Appointment from '../views/Appointment.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -21,6 +22,12 @@ const routes: RouteRecordRaw[] = [
     path: '/consultation/:doctorUsername',
     name: 'ConsultationRoom',
     component: Consultation,
+  },
+  {
+    path: '/appointment',
+    name: 'Appointment',
+    component: Appointment,
+    meta: { requiresAuth: true, role: 'patient' },
   },
   {
     path: '/doctors',
