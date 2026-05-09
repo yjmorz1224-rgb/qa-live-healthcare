@@ -1,0 +1,14 @@
+{
+	"registry_id": "context-builder-7",
+	"name": "Context Builder 7",
+	"description": "A set of basic tools for AI-assisted software development.",
+	"version": "0.0.7",
+	"downloadUrl": "context-builder.zip",
+	"entryPoint": "context-builder/README.md",
+	"dateCreated": "2026-01-21T00:00:00Z",
+	"dateUpdated": "2026-01-21T00:00:00Z",
+	"createdBy": "ASDM Platform",
+	"updatedBy": "ASDM Platform",
+	"configType": "toolset",
+	"commands": {"/asdm-context-builder":"Builder", "/asdm-context-update":"Update", "/asdm-ddl-context-analysis":"Analysis"}
+}
