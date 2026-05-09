@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "activeWorkspaceId": "1",
+  "toolsetIds": [],
+  "specIds": [],
+  "contextIds": [],
+  "workspaces": {
+    "1": {
+      "registryVersion": "snapshot-1.0.0",
+      "toolsetIds": [
+        "context-builder-7"
+      ],
+      "specIds": [],
+      "contextIds": [
+        "1"
+      ],
+      "updatedAt": "2026-05-09T01:17:12.961Z"
+    }
+  }
+}
