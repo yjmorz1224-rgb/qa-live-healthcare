@@ -1,0 +1,408 @@
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+核心逻辑
+工作空间下载接口优先通过 file URI 调用文件服务。
+旧 relative_path + file_entries 数据继续走本地 zip。
+工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+
+交付物
+工作空间制品下载新链路。
+工作空间制品 content 代理访问。
+旧制品下载回退。
+
+验证步骤
+ V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
+ V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
+ V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
+curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
