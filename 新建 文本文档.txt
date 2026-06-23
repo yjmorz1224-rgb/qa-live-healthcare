@@ -1,408 +1,523 @@
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+ASDM文档中心
+ASDM文档中心入口——方法论、平台与工具集
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+ASDM
+文档
+入口
+ASDM 文档中心
+ASDM（AI优先的系统化开发方法论）回答的核心问题是：AI 能写代码，但如何让它准确、可靠地为企业所用？从让 AI 写对代码、为 AI 构建合适的工具，到将 AI 能力以统一、标准化、可管理的方式引入企业研发全流程，并确保复杂长任务下的执行稳定性——四个层次递进的问题构成了 ASDM 的核心关切。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+ASDM 是方法论、工具和实践的组合。方法论定义了 AI 驱动开发的核心范式，将系统开发的基本逻辑从为人类设计流程和工具，转向为 AI 设计流程和工具；ASDM 平台将方法论转化为可操作的功能——效能洞察量化 AI 提效效果、场景管理覆盖研发全流程、工具集编排提供场景化 AI 工具链；工具集则为每个具体研发场景提供预构建的 AI 工具、模板和指令，是方法论的实践载体。三者协同：方法论指导设计，平台承载落地，工具集执行交付。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+ASDM 建立在四个基本假设之上：只要解决准确性问题，AI 就可以百倍速度生产软件；当 AI 承担大部分价值产出，就应该围绕 AI 构建工具；只要 AI 能力可以被标准化为场景化单元，就可以将 AI 统一引入企业研发全流程；只要 AI 的执行过程可以被持续的反馈和校准机制驾驭，就可以在复杂长任务中保持稳定可靠。从"为人类设计"到"为 AI 设计"，从"个体工具"到"组织能力"——这一范式转变正在重塑软件开发的价值流。传统工程体系中为人设计的可视化界面和图文文档，不适合 AI 的文本交互方式；旧度量体系中的代码采纳率和故事点，无法反映 AI 协作模式下的真实提效。ASDM 通过场景化指标体系将 AI 提效效果量化为管理层可直接感知的数据——从"AI 生成了多少行代码"升级为"AI 在需求编写这个环节把效率提升了 4 倍"。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1. 模块索引
+概念 — 理解"为什么"
+ASDM 方法论的核心概念与思维框架。从四个基本假设出发，逐步阐述三项基础能力、自反馈系统、AI化场景等关键概念，形成假设→问题→能力→机制→度量的逻辑链，帮助读者理解"为 AI 设计"的底层逻辑与必然性——从个体级问题到企业级问题，从让 AI 写对代码到让 AI 在企业研发全流程中可靠运行。进入概念总览可阅读完整的方法论概述。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+主题	要点
+三项基础能力	场景认知/上下文工程、自主执行/驾驭工程、自我迭代，以及模型训练的局限性
+自反馈系统	通过确定性工具给不确定性模型正确反馈、PDCA戴明环、内循环与外循环、AI加速反馈机制
+AI化场景与指标	AI化场景定义、微观指标与场景化指标对比、覆盖广度/执行深度/提效比例
+上下文注入	工具集间上下文共享机制、上下文的创建与消费、跨工具集协同
+能力体系结构	基础能力与场景能力分类、ASDM Landscape 全景图
+愿景与第一性原理	愿景声明、超级个体与新技能、软件工程第一性原理
+平台 — 掌握"怎么做"
+ASDM 平台将方法论转化为可操作的软件产品，是方法论落地的载体。平台支持本地运行（CLI + IDE 协同）和在线运行（Web 端全流程）两种模式，通过六大核心模块覆盖 AI 驱动开发的全流程——从组织与项目管理、AI 能力资源供给，到任务执行与效能度量。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+模块	对应方法论能力	要点
+快速入门	—	注册登录、创建组织与项目、完成第一个 AI 化场景开发（本地/在线模式）
+组织结构管理	基础设施	组织与项目管理、权限系统、用户管理、个人访问令牌
+资源库	场景认知能力	工具集、上下文空间、规约说明、技能、MCP 五种资源类型的管理与使用
+工作空间	自主执行能力	AI 隔离执行环境，支持创建配置、资源管理、触发执行与制品管理
+ASDM MCP Server	自主执行能力	平台与 AI Agent 之间的网关服务，命令转发与事件上报
+CLI 客户端	自主执行能力	命令行工具，涵盖安装配置、身份认证、资源管理与 MCP 集成
+效能洞察	自我迭代能力	场景化指标度量，覆盖广度/执行深度/提效比例三维评估
+工具集 — 获取"用什么"
+工具集是 ASDM 方法论的实践载体，为每个具体研发场景提供预构建的 AI 工具、模板和指令。每个工具集可独立安装到项目工作空间，AI 编码助手安装后通过斜杠命令调用，实现场景化的 AI 能力交付。工具集通过 ASDM 库集中管理与分发，支持社区贡献和版本管理。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+工具集	要点
+基础 ASDM 工具集	ASDM 开发的基础工具和模板，适合初始项目设置
+高级 ASDM 工具集	面向复杂项目的增强工具，包含高级模板和工作流
+上下文构建器	构建和管理项目上下文，让 AI 深度理解项目全貌
+敏捷团队规约生成器	生成规约文档（PRD），支持史诗/功能/任务分解，内置上下文注入
+2. 快速导航
+想了解方法论 → 从概念开始，理解 ASDM 的思维框架与核心原理
+想快速上手 → 前往平台入门指南，安装配置并开始使用 ASDM
+想浏览工具 → 查看工具集，发现适合你研发场景的 AI 工具链
+ASDM核心概念
+ASDM方法论的核心概念与思维框架——四层递进核心问题、四个基本假设、范式转变与概念导航
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+ASDM
+概念
+方法论
+架构
+ASDM 核心概念
+ASDM（AI优先的系统化开发方法论，AI First System Development Methodology）回答的根本问题是：在 AI Agent 能够自主编写代码的时代，人类应该如何开发软件？
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+ASDM 是方法论、工具和实践的组合。方法论定义了 AI 驱动开发的核心范式；ASDM 平台将方法论转化为可操作的功能；工具集为每个研发场景提供实践载体。三者协同：方法论指导设计，平台承载落地，工具集执行交付。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1. 核心问题
+AI 编码工具已经从满足情绪价值的玩具成为真正的生产力工具。从只能完成一行代码的补全，到可以一次性完成多个文件的上千行代码生成，AI 编码工具已经具备了全自动完成完整软件产品的基本技能。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+然而，从"AI 能写代码"到"AI 能在企业中可靠地、规模化地写代码"，还面临四个层次递进的核心问题。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1.1 个体级问题：让 AI 写对代码
+就如同一个刚入行的开发者，虽然掌握了基本语法和框架，但缺乏经验积累和对产品的理解，经常犯以下错误：
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+没有正确使用现有组件而重新造轮子
+功能完成但存在严重的安全或性能问题
+完成了 A 功能但导致 B 功能出现缺陷
+这就是准确性问题——AI 能写代码但写不准。解决它，是 AI 编码工具从"能用"到"好用"的第一步。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1.2 工具级问题：为 AI 构建合适的工具
+传统软件工程的工具体系是为人类设计的：可视化界面、图形化操作、图文混合的文档。这些对 AI 而言是低效甚至不可用的信息通道。AI 更擅长文本交互、命令行工具和结构化的指令。如果 AI 不得不"穿过"为人设计的工具来工作，就像让一个习惯命令行的工程师只能通过鼠标点击操作——效率大打折扣。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+这就是工具链问题——需要构建为 AI 设计的工具，而非让 AI 勉强使用为人类设计的工具。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1.3 企业级问题：将 AI 能力规模化引入研发全流程
+解决了准确性和工具链问题，AI 在个人和小团队场景下已经可以高效工作。然而，当一家企业试图将 AI 能力引入其完整的研发体系时，面对的是完全不同量级的挑战：
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+一致性缺失：不同团队、不同项目的 AI 使用方式各异，产出的代码风格、质量标准、架构决策千差万别，无法统一管理
+流程断裂：AI 能力仅散落在个别环节（如代码补全），需求、设计、测试、运维等上下游环节无法享受 AI 提效，整体流程仍然依赖人力衔接
+不可治理：谁在什么场景下使用了 AI？效果如何？哪些场景还没有覆盖？管理者无从得知，无法做出基于数据的决策
+知识孤岛：A 团队积累的 AI 上下文经验和工具集，B 团队完全无法复用，每个团队都在从零开始
+这就是规模化引入问题——如何将 AI 能力以统一、标准化、可管理的方式引入企业研发的全流程，而非停留在个体工具的层面。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+1.4 执行级问题：确保 AI 在复杂和长任务下的稳定性
+个人开发者用 AI 写一个独立功能，几分钟就能验证结果。但在企业级研发场景中，任务往往跨越多个系统、涉及数十个文件、需要经过多个阶段的验证——一个需求的完整交付可能需要 AI 连续工作数小时，执行上百个步骤。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+在这样的复杂和长任务背景下，AI 面临严峻的稳定性挑战：
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+上下文衰减：随着任务推进，AI 逐渐遗忘早期决策和约束，后续产出偏离初始目标
+错误累积：早期的小偏差在多步执行中被逐步放大，导致最终结果严重偏离预期
+执行失控：缺乏有效的中断、检查和纠偏机制，AI 在错误方向上持续投入，浪费大量时间和资源
+协作断层：多个 AI Agent 之间的任务交接缺乏标准化机制，信息在传递中丢失或变形
+这就是执行稳定性问题——如何确保 AI 在复杂、长周期、多步骤的企业任务中保持目标一致、执行可控、结果可靠。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+四个问题的递进关系
+准确性问题
+AI 写对代码
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+工具链问题
+为 AI 构建工具
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+规模化引入问题
+AI 能力进入全流程
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+执行稳定性问题
+复杂任务下的可靠性
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+图：四个核心问题的递进关系——从个体可用到企业可靠
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+四个问题层层递进：准确性是基础，没有准确性一切无从谈起；工具链是条件，没有合适的工具 AI 无法高效工作；规模化引入是跨越，从个体工具升级为企业能力；执行稳定性是保障，让 AI 能力在复杂真实场景中可靠交付。解决前两个问题，AI 编码工具在个体层面已经可用；解决后两个问题，AI 才能真正成为企业研发体系的核心生产力。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+2. 四个基本假设
+ASDM 建立在四个基本假设之上，这四个假设构成了整个方法论的逻辑起点：
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+假设1：如果 AI 可以以超越人类几百倍的速度编写代码，那么只要解决代码生成的准确性问题，就可以用百倍速度生产软件
+假设2：如果 AI 已经承担了大部分的价值产出工作，那么就应该围绕这个价值产出主体构建工具，而不再是为人构建工具
+假设3：如果 AI 能力可以被标准化为可定义、可度量、可复用的场景化单元，那么就可以将 AI 能力以统一的方式引入企业研发的每一个环节
+假设4：如果 AI 的执行过程可以被持续的反馈和校准机制所驾驭，那么 AI 就可以在复杂和长任务背景下保持目标一致和结果可靠
+假设1 和假设2 回答的是"个体级"问题——让 AI 单点可用。假设3 指向规模化引入的路径——不是在每个环节各建各的 AI 工具，而是将 AI 能力标准化为场景化单元，通过平台统一供给和管理。假设4 指向执行稳定性的解决路径——不是靠限制 AI 的行为来维持稳定，而是靠建立持续反馈和校准的驾驭机制来确保长程执行的可靠性。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+3. 范式转变：从为人设计到为 AI 设计
+传统软件工程以人为价值创造核心，整个体系围绕提升开发者的效率来构建。流程、工具、规范都是为了让人和团队更好地协作，最终交付可用的软件。效能度量也围绕人展开——代码行数、故事点完成率、交付周期——衡量的是人的产出效率。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+在 AI 时代，价值创造的主体从单纯的人转向"AI + 人"的协作模式。大部分产出物由 AI 生成，人的角色从直接写代码转向指导 AI 工作，在关键节点做决策。
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+这种变化重塑了软件开发的价值流。AI 承担更多工作环节，人在关键连接点发挥作用：控制上下游衔接、做关键决策、提供方向指导。这需要构建新的价值流体系来适应 AI 时代的开发特点。同时，度量体系也必须随之升级——当 AI 生成的代码不算"人写的"，AI 辅助的文档不算"人排版"的，但组织确实因此变快了，旧的度量体系无法反映这种新的效率来源。
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+从个体效率到组织效能
+ASDM 的范式转变不仅发生在"工具为谁设计"的层面，更发生在"效能如何衡量和管理"的层面。个体级的范式转变解决了"AI 怎么用好"的问题，组织级的范式转变要解决"AI 的价值如何被管理和放大"的问题：
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+对比维度	传统开发模式	AI 协作模式
+价值创造主体	人	AI + 人
+主要产出方式	人直接编写	AI 生成，人指导
+人的角色	编写代码和文档	指导 AI，做关键决策
+工具设计思路	为人服务，可视化界面	为 AI 服务，文本交互
+知识传递方式	文档、图片、界面	文本化上下文
+价值流特点	人主导各环节	AI 承担大部分环节，人控制关键点
+协作方式	人与人之间协作	人与 AI 协作，AI 与 AI 协作
+效能度量	代码行数、故事点、交付周期	场景覆盖率、执行深度、提效比例
+能力管理	个人技能培训和认证	AI 能力的场景化定义、供给与度量
+质量保障	人工审查和测试	自反馈系统 + 驾驭工程的持续校准
+4. 概念导航
+ASDM 方法论从基本假设出发，形成假设→问题→能力→机制→度量的逻辑链，以下概念按递进关系组织：
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+假设3 对应
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+假设4 对应
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+ASDM 方法论
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+方法论概述
+四个假设 + 范式转变
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+三项基础能力
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+场景认知 / 上下文工程
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+自主执行 / 驾驭工程
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+自我迭代
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+自反馈系统
+PDCA → AI 加速循环
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+AI化场景
+场景化指标体系
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+上下文注入
+实践机制
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+能力体系结构
+基础 + 场景
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
-核心逻辑
-工作空间下载接口优先通过 file URI 调用文件服务。
-旧 relative_path + file_entries 数据继续走本地 zip。
-工作空间制品 URI 可通过 asdm-service-core 代理 content/download。
+愿景与第一性原理
 
-交付物
-工作空间制品下载新链路。
-工作空间制品 content 代理访问。
-旧制品下载回退。
+图：ASDM 方法论概念关系（虚线表示假设3、假设4与核心概念的对应关系）
 
-验证步骤
- V5.2.1 下载新工作空间制品 → 返回 zip 且可解压
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$RUN_HISTORY_ID/artifact-download" -o /tmp/ws.zip && unzip -t /tmp/ws.zip
- V5.2.2 通过 file URI 读取工作空间 Markdown → 返回原文
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/library/files/content?uri=$WORKSPACE_FILE_URI"
- V5.2.3 旧工作空间制品仍可下载 → zip 校验成功
-curl -s -H "Authorization: Bearer $PAT" "$ASDM_ADMIN_URL/api/workspaces/run-histories/$LEGACY_RUN_ID/artifact-download" -o /tmp/ws-legacy.zip && unzip -t /tmp/ws-legacy.zip
+概念	定义	对应问题	详细文档
+三项基础能力	为 AI 构建场景认知、自主执行和自我迭代三项能力，是范式转变的落地实践	准确性 + 工具链	三项基础能力
+自反馈系统	通过确定性工具给不确定性模型正确的反馈，以 PDCA 戴明环实现自反馈循环，是解决准确性问题的核心机制	准确性 + 执行稳定性	自反馈系统
+AI化场景	AI 主导的研发任务，可独立交付和量化评估的提效单元	规模化引入	AI化场景与场景化指标
+上下文注入	工具集间共享工作空间上下文信息的机制，让 AI 跨场景使用一致的项目知识	规模化引入 + 执行稳定性	上下文注入
+能力体系结构	基础能力与场景能力的分层体系，方法论沉淀为平台功能设计原则	全部四项	能力体系结构
+愿景与第一性原理	为 AI 构建工具的愿景、超级个体与新技能、软件工程第一性原理	—	愿景与第一性原理
+5. 推荐阅读顺序
+三项基础能力 — 理解为 AI 构建的三项工作环境，解决准确性和工具链问题
+自反馈系统 — 理解解决准确性和执行稳定性的核心机制
+AI化场景与场景化指标 — 理解 AI 能力标准化和规模化引入的框架
+上下文注入 — 理解跨场景知识共享和长任务上下文维持机制
+能力体系结构 — 理解基础能力与场景能力的关系，从个体到组织的完整体系
+愿景与第一性原理 — 理解 ASDM 的愿景与理论基础
+ASDM平台概述
+AI优先系统化开发方法论的综合管理平台
+
+ASDM
+平台
+管理
+工作空间
+流水线
+制品
+ASDM 平台概述
+为什么需要 ASDM？
+当企业引入 AI 重塑研发流程时，面对的第一个难题不是技术实现，而是如何证明 AI 真正在起作用。行业普遍使用的代码采纳率、代码生成率等微观指标，只能回答"AI 在某次交互中产出了多少代码"，却无法回答管理者真正关心的问题：整个项目因为 AI 节省了多少人力？每个研发环节的效率到底提升了多少？
+
+更根本的问题是：在 AI Agent 能够自主编写代码的时代，人类应该如何开发软件？传统软件工程以人为价值创造核心，流程、工具、规范都围绕提升开发者的效率来构建。但在 AI 时代，价值创造的主体从单纯的人转向 "AI + 人"的协作模式——大部分产出物由 AI 生成，人的角色从直接写代码转向指导 AI 工作、在关键节点做决策。
+
+这意味着整个开发体系需要一次根本性转变：从"为人类设计流程和工具"转向"为 AI 设计流程和工具"。ASDM（AI-First System Development Methodology）正是回答这一根本问题的方法论，而 ASDM 平台则是将这套方法论落地为可操作软件产品的载体。
+
+
+
+三项基础能力，一个平台落地
+ASDM 方法论指出，要让 AI 在研发中真正发挥作用，需要为 AI 构建三项基础能力。ASDM 平台的每个核心模块都对应着其中一项能力的落地：
+
+1. 场景认知能力 —— 上下文工程
+为 AI 提供合适的上下文环境，让 AI 真正理解项目全貌而非仅仅补全代码片段。核心原则：用最少的高信号令牌实现最大预期效果。
+
+方法论要求	平台如何落地
+上下文的构建与结构化组织	上下文空间 — 聚合代码库、文档、数据库和 URL 的知识容器，为 AI 提供项目级上下文
+编码规范的自动遵循	规约说明 — 标准化编码指南和最佳实践，AI 助手自动遵循团队规范
+知识的沉淀与复用	三级资源仓库 — 服务器级 → 组织级 → 项目级，团队知识逐级共享
+对比：没有上下文工程的 AI 只是"通用编码助手"；有了上下文工程，AI 升级为"深度理解项目、自主交付功能的开发伙伴"。
+
+2. 自主执行能力 —— 驾驭工程
+没有驾驭（Harness）的 AI Agent 就像没有缰绳的马——力量大但不可控。驾驭工程让 AI 的工作过程和输出更可控、可预测，包含约束、上下文、验证、修复和生命周期五个核心要素。
+
+方法论要求	平台如何落地
+约束 AI 的能力边界	工具集 — 定义 AI 能做什么、不能做什么，安装后通过斜杠命令调用
+管理 AI 的执行环境	工作空间 — 隔离执行环境，精确配置 AI 智能体的资源、分支和规范
+扩展 AI 与外部系统的交互	MCP + 技能 — 网关服务与能力包，为 AI 提供工具链和领域专长
+统一 AI 工具调用通道	ASDM MCP Server — 平台与 AI Agent 之间的官方网关，命令转发与事件上报
+从 IDE 驱动 AI 执行	CLI 客户端 — 命令行工具，在本地开发环境中直接与平台交互
+对比：没有驾驭工程的 AI 容易在长期任务中偏离目标、遗忘上下文、重复错误；有了驾驭工程，AI 的每次执行都有约束、有验证、可修复。
+
+3. 自我迭代能力
+保持项目状态同步和工具适配，随着项目发展及时更新，确保体系持续有效。这项能力需要一个可量化的反馈闭环——管理者不再凭感觉判断"AI 环境建设得好不好"，而是通过指标数据精确识别薄弱环节并持续改进。
+
+方法论要求	平台如何落地
+识别哪些场景在持续优化	效能洞察 — 覆盖广度 — AI 覆盖了多少研发环节？回答"有没有"
+判断工具链是否需要加强	效能洞察 — 执行深度 — 工具集调用成功率、好评率如何？回答"好不好"
+量化每个场景节省了多少时间	效能洞察 — 提效比例 — 从"AI 生成了多少行代码"升级为"AI 在需求编写环节把效率提升了 4 倍"
+对比：传统度量用代码行数、故事点、交付周期衡量人的产出；ASDM 用场景覆盖率、执行深度、提效比例衡量"AI + 人"协作模式下的真实提效效果。
+
+AI 化场景：从微观指标到场景化指标
+ASDM 的核心价值体现在 AI 化场景——每个 AI 化场景都是以工具集为载体的、可独立交付、可量化评估的完整提效单元：
+
+微观过程类指标（行业现状）	场景化指标（ASDM 平台）
+典型指标	代码采纳率、补全接受率	场景覆盖率、提效比例、累计节省时长
+度量粒度	单次交互（一次补全、一次生成）	完整场景（从输入到交付的全过程）
+管理可见性	仅开发者和工具可感知	管理层可直接用于决策和汇报
+覆盖范围	仅限编码环节	需求、编码、测试、文档、数据等全研发流程
+ASDM 平台通过 效能洞察 将场景化指标落地为管理者可直接感知、可决策的数据。
+
+使用 ASDM 平台的基本方式
+ASDM 平台支持两种运行模式，覆盖不同开发场景：
+
+本地运行模式（CLI + IDE 协同）
+适合偏好本地开发环境、需要实时调试和快速迭代的开发者。通过 CLI 安装工具集，在 IDE 中直接驱动 AI 执行任务：
+
+安装配置 CLI
+初始化本地环境
+
+登录平台
+建立认证连接
+
+安装资源
+下载工具集与规范
+
+本地驱动 AI
+构建上下文→规划→执行
+
+安装 CLI → 身份认证 → 安装工具集到项目
+构建上下文 → 使用 Context Builder 让 AI 读懂项目全貌
+驱动执行 → 使用 PRD Builder 将需求分解为任务，驱动 AI 逐步交付
+查看本地模式场景手册
+
+在线运行模式（Web 端全流程）
+适合团队协作、远程办公或需要统一管理执行环境的场景，全程在浏览器中完成：
+
+创建工作空间
+定义开发容器
+
+配置资源
+挂载工具与知识
+
+触发运行
+下达 AI 指令
+
+获取成果
+查看交付物
+
+创建工作空间 → 关联代码仓库、绑定工具集与上下文空间
+触发 AI 执行 → 输入任务描述，AI 智能体在隔离环境中自主执行
+审查交付成果 → 查看运行历史、审查代码变更、下载制品
+查看在线模式场景手册
+
+两种模式共享同一套资源库和效能度量体系，您可以根据场景灵活选择或混合使用。
+
+平台核心优势
+方法论驱动设计：平台功能直接对应 ASDM 方法论的三项基础能力，确保每一项功能都有理论支撑和清晰的价值定位
+集中管理：统一的界面管理所有项目中的 AI 开发资源，支持服务器 → 组织 → 项目三级资源仓库
+广泛兼容性：支持多种 AI 开发工具，包括 CodeBuddy、Claude Code、GitHub Copilot、Cursor、Cline 等
+可量化效果：通过效能洞察的覆盖广度、执行深度和提效比例三个维度，让 AI 提效效果管理可见、可决策
+团队协作：支持多用户和基于角色的访问控制，团队知识沉淀为可复用资源
+可扩展架构：基于插件的系统，可通过工具集、技能和 MCP 集成自定义工具和工作流程
+平台层级
+ASDM 平台采用四层层级结构，每一层都有明确的访问控制边界和管理职责：
+
+层级	说明	可访问角色
+服务器	整个平台的全局管理，包括组织创建、平台配置	仅超级管理员
+组织	管理项目、用户和组织设置	超级管理员、组织管理员
+项目	管理工作空间、资源库和项目成员	组织管理员、项目管理员、项目成员
+工作空间	项目内的具体工作区域，AI 智能体的执行环境	具有相应权限的项目成员
+产品模块
+ASDM 平台由六大核心模块组成，覆盖 AI 驱动开发的全流程。每个模块对应 ASDM 方法论中的一项关键能力落地：
+
+方法论能力	对应模块
+场景认知能力	资源库 — 工具集、上下文空间、规约说明、技能和 MCP
+自主执行能力	工作空间 · ASDM MCP Server · CLI 客户端
+自我迭代能力	效能洞察 — 覆盖广度、执行深度和提效比例
+基础设施	组织结构管理 — 组织、项目、权限与用户管理
+查看完整产品模块文档
+
+快速入门
+新用户请从快速入门开始，按场景手册逐步完成平台核心使用流程：
+
+步骤	场景手册	描述
+1	用户注册和登录	注册 ASDM 账户、登录平台、创建个人访问令牌
+2	创建组织、项目并完成初始化	创建组织、建立项目、关联代码仓库
+3	完成第一个 AI 化场景开发（本地运行模式）	通过 CLI + IDE 协同，使用 Context Builder 和 PRD Builder 完成开发闭环
+4	完成第一个 AI 化场景开发（在线运行模式）	在 Web 端创建工作空间、配置资源、触发 AI 执行并获取交付成果
+查看完整快速入门指南
+
+下一步
+快速入门 — 新用户快速上手指南
+产品模块 — 各模块的详细文档入口
+工作坊
+ASDM实战培训工作坊——通过示例项目动手实践AI优先开发流程
+
+ASDM
+工作坊
+培训
+实战
+示例
+工作坊
+面向 ASDM 新用户的实战培训工作坊。通过示例项目动手实践，掌握 ASDM 研发工艺驱动的 AI 优先开发流程。
+
+工作坊列表
+工作坊	示例项目	技术栈	预估时间
+QA Healthcare 工作坊	医疗问答系统	Java 21 + Spring Boot + Vue.js 3	约 2 小时
+The Amazing Bank 工作坊 🚧	现代数字银行	React 18 + Spring Boot 3.1 + Java 17	构建中
+FDE 工作坊	Harness 工具集交付包	ASDM HSCP + AI 编码助手	约 1 天
+工作坊设计理念
+每个工作坊围绕一个完整的示例项目展开，参训人员从零开始：
+
+环境准备 — 克隆项目、平台登录、ASDM 初始化
+上下文构建 — 使用 Context Builder 让 AI 读懂项目
+驾驭工程安装 — 配置完整的研发流水线命令
+特性开发 — 选择 roadmap 中的特性，体验 AskMe → Design → Plan → Develop → Verify 全流程
+环境准备
+
+上下文构建
+
+驾驭工程安装
+
+特性开发全流程
+
+相关文档
+文档	说明
+ASDM 核心概念	理解工作坊背后的方法论基础
+场景操作手册	平台端到端操作指南
+快速入门	平台用户的快速入门指南
+客户定制化文档
+客户定制化文档入口——编写指南、适用场景与目录规范说明
+
+ASDM
+定制化
+文档
+客户
+客户定制化文档
+::: warning 示例文档，实际使用时可以根据需要删除。 :::
+
+本目录用于存放客户现场的定制化文档内容，由客户现场团队根据实际需求进行编写和维护。
+
+编写指南
+本文档区域为客户专属定制空间，用于记录和发布以下类型的内容：
+
+适用场景
+文档类型	说明	示例
+部署指南	客户环境的安装、配置与部署步骤	内网环境部署、私有化配置、集成对接说明
+定制功能说明	为客户定制开发的功能的使用说明	定制报表、自定义工作流、特殊集成模块
+运维手册	客户现场的运维操作规范	备份恢复、故障排查、性能调优、安全加固
+培训材料	面向客户团队的内部培训资料	新人上手指南、最佳实践、常见问题 FAQ
+合规文档	符合客户组织要求的合规性文件	安全审计报告、权限管理规范、数据隐私声明
+编写规范
+目录结构：在当前目录下按模块或主题创建子目录，每个子目录下放置对应的 .md 文件
+文件命名：使用中文或英文小写字母、连字符分隔，如 deployment-guide.md、faq.md
+格式要求：采用 Markdown 格式编写，保持与公共文档一致的排版风格
+引用资源：如需引用图片等资源，请放置在当前目录或子目录下的 assets/ 文件夹中
+更新记录：建议在每个文档末尾维护变更日志，记录修改时间、修改人和修改内容
+目录结构示例
+custom/docs/zh-cn/content/
+├── _index.md                    # 本页：文档入口与编写指南
+├── deployment/                  # 部署相关
+│   ├── _index.md
+│   ├── private-network-setup.md
+│   └── cluster-config.md
+├── customization/               # 定制功能
+│   ├── _index.md
+│   └── custom-reports.md
+└── operations/                  # 运维相关
+    ├── _index.md
+    ├── troubleshooting.md
+    └── backup-restore.md
+开始编写
+客户现场团队可基于以上指南，在此目录下创建和维护定制化文档。每个子目录建议包含 _index.md 作为该模块的概览页面。
+
+提示：本文件为模板引导，客户团队可根据实际需求自由调整内容和结构。
+部署指南
+ASDM 私有化部署的完整流程和最佳实践
+
+部署
+私有化
+内网
+Docker
+部署指南
+本模块介绍 ASDM 平台私有化部署的完整流程和最佳实践，涵盖架构设计、环境准备、安装配置及后续维护等内容。
+
+文档列表
+文档	说明	最后更新
+私有化部署指南	内网环境的完整部署方案与架构设计	2026-04-29
+适用场景
+本模块适用于以下部署需求：
+
+数据安全合规：金融、政务、医疗等行业对数据不出内网的要求
+网络隔离环境：与互联网物理或逻辑隔离的封闭网络
+高性能本地部署：需要低延迟、高可控性的本地化部署
+混合云架构：作为混合云部署的私有化组件
+部署前准备
+在开始部署之前，请确保已准备好以下资源：
+
+基础设施：满足 硬件要求 的服务器
+网络环境：规划好内外网隔离策略和域名解析
+许可证：获取有效的私有化部署许可证文件
+AI 模型：确定使用的 AI 模型来源（公有 API 或私有模型）
+阅读建议：首次部署建议按顺序阅读 私有化部署指南 完成初始安装，然后参考 运维手册 进行日常维护。
+定制功能
+定制报表、自定义工作流、特殊集成模块等增强功能概览
+
+定制
+报表
+工作流
+集成
+定制功能
+本模块涵盖为客户定制的增强功能，包括但不限于定制报表、自定义工作流、特殊集成模块等。这些功能通过配置驱动实现，无需修改核心代码即可完成业务适配。
+
+文档列表
+文档	说明	最后更新
+定制功能说明	定制报表、自定义工作流、特殊集成模块的完整配置指南	2026-04-29
+能力概览
+能力域	描述	复杂度
+定制报表	基于平台数据的自定义报表，支持多维度分析和可视化
+自定义工作流	符合客户研发流程的自动化工作流编排
+特殊集成	与企业现有系统的深度对接（LDAP、IM、项目管理）
+UI 主题	企业品牌色、Logo、布局的定制
+权限模型	基于组织架构的多级权限策略
+快速入门
+如果您是第一次使用定制功能，推荐按以下路径学习：
+
+先了解 私有化部署 的基础架构
+从最简单的 定制报表 开始尝试
+逐步进阶到 自定义工作流 和 特殊集成
+阅读建议：定制功能说明 包含完整的配置示例和最佳实践，建议通读后再动手配置。
+运维手册
+备份恢复、监控告警、故障排查、性能调优等运维操作规范
+
+运维
+监控
+备份
+告警
+运维手册
+本模块提供 ASDM 平台私有化部署后的日常运维指南，包含备份恢复、监控告警、故障排查、性能调优等内容。
+
+文档列表
+文档	说明	最后更新
+故障排查指南	常见问题的诊断流程和解决方案	2026-04-29
+运维职责矩阵
+运维领域	负责角色	操作频率	关键 SLA
+备份管理	DevOps / DBA	每日增量 + 每周全量	RPO < 1h
+监控巡检	SRE / 运维工程师	7×24 自动告警 + 人工日检	MTTR < 30min
+版本升级	平台管理员	按需（建议月度）	停机窗口 < 15min
+安全管理	安全工程师	每季度审计	零已知高危漏洞
+容量规划	架构师	每季度评估	资源利用率 < 80%
+监控体系
+核心监控指标
+指标类别	具体指标	告警阈值
+可用性	服务 HTTP 状态码	非 200 比例 > 1%
+性能	API P99 延迟	> 2000ms
+资源	CPU / 内存 / 磁盘使用率	> 85%
+业务	工具集调用成功率	< 95%
+连接	数据库连接池使用率	> 80%
+日志采集
+ASDM 各组件输出结构化 JSON 日志，推荐使用以下方案集中采集：
+
+复制
+# 使用 Fluentd 收集 Docker 日志
+fluentd --config /etc/fluentd/fluent.conf
+
+# 或使用 Filebeat + ELK Stack
+filebeat -e -c filebeat.yml
+日志字段规范：
+
+字段	类型	说明
+timestamp	ISO 8601	事件时间
+level	enum	DEBUG / INFO / WARN / ERROR
+service	string	服务名称（admin / agentorbit / cli）
+trace_id	string	分布式追踪 ID
+user_id	string	操作用户 ID
+action	string	操作类型
+duration_ms	number	执行耗时
+重要提醒：遇到生产问题时，请优先按照 故障排查指南 的步骤进行诊断。大部分常见问题可在 5 步内定位根因。
